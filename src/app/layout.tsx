@@ -27,6 +27,14 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <header className="w-full py-6 flex justify-center border-b border-gray-200 dark:border-gray-700 mb-8">
+          <nav className="flex gap-8 text-lg font-semibold">
+            <a href="/" className="hover:text-blue-600 transition-colors">Home</a>
+            <a href="/projects" className="hover:text-blue-600 transition-colors">Projects</a>
+            <a href="/about" className="hover:text-blue-600 transition-colors">About</a>
+            <a href="/contact" className="hover:text-blue-600 transition-colors">Contact</a>
+          </nav>
+        </header>
         {children}
       </body>
     </html>
