@@ -139,6 +139,17 @@ export default function Projects() {
             <a href={repo.html_url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
               View on GitHub
             </a>
+            {/* Add link to embedded app if this is the Tik-Tok/Reels Script Generator */}
+            {repo.name === "Vertical-Video-Comedy-Sketch--.fdx-pdf_generator-" && (
+              <div className="mt-2">
+                <a
+                  href="/flyio-app"
+                  className="inline-block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-sm font-medium"
+                >
+                  Open Tik-Tok/Reels Script Generator App
+                </a>
+              </div>
+            )}
           </div>
         ))}
       </div>
