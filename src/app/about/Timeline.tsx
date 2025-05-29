@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 import { timeline, TimelineEntry, finalTimelineText, finalTimelineImage } from '../../data/timeline';
 
 const Timeline: React.FC = () => {
@@ -11,11 +12,14 @@ const Timeline: React.FC = () => {
         >
           <div className="md:w-1/2 w-full flex flex-col items-center mb-4 md:mb-0 gap-4">
             {entry.images.map((img, i) => (
-              <img
+              <Image
                 key={i}
                 src={img}
                 alt={entry.caption.substring(0, 40) + '...'}
                 className="rounded-lg shadow-lg max-h-96 object-contain"
+                width={600}
+                height={400}
+                unoptimized
               />
             ))}
           </div>
@@ -27,10 +31,13 @@ const Timeline: React.FC = () => {
         </div>
       ))}
       <div className="w-full flex flex-col items-center mt-16 gap-6">
-        <img
+        <Image
           src={finalTimelineImage}
           alt="Final timeline highlight"
           className="rounded-lg shadow-lg max-h-96 object-contain"
+          width={600}
+          height={400}
+          unoptimized
         />
         <p className="max-w-2xl text-xl text-gray-800 dark:text-gray-200 text-center font-medium whitespace-pre-line">
           {finalTimelineText}

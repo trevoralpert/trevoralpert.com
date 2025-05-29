@@ -11,9 +11,9 @@ export default function Home() {
         className="rounded-full border-4 border-blue-500 mb-4 object-cover"
         priority
       />
-      <h1 className="text-4xl font-bold">Hi, I'm Trevor Alpert</h1>
+      <h1 className="text-4xl font-bold">Hi, I&apos;m Trevor Alpert</h1>
       <p className="max-w-2xl text-lg text-gray-700 dark:text-gray-300">
-        After a successful career in TV, I've transitioned my passion for storytelling and creativity into the world of Artificial Intelligence. This site is a narrative of my journey, showcasing the projects and apps that define my work and vision for the future.
+        After a successful career in TV, I&apos;ve transitioned my passion for storytelling and creativity into the world of Artificial Intelligence. This site is a narrative of my journey, showcasing the projects and apps that define my work and vision for the future.
       </p>
       <a
         href="/projects"
