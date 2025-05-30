@@ -26,14 +26,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192x192.png" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <header className="w-full py-6 flex items-center border-b border-gray-700 bg-[#0a2233] mb-8 px-8">
           <Link href="/" className="flex-shrink-0">
-            <Image src="/logo.png" alt="Trevor Alpert Logo" width={100} height={100} className="w-full h-full" />
+            <Image src="/logo.png" alt="Trevor Alpert Logo" width={130} height={130} className="rounded-lg" />
           </Link>
-          <nav className="flex-1 flex justify-center gap-20 text-3xl font-semibold text-white">
+          <nav className="flex-1 flex justify-center gap-16 text-3xl font-semibold text-white">
             <Link href="/" className="hover:text-[#ffe066] transition-colors">Home</Link>
             <Link href="/projects" className="hover:text-[#ffe066] transition-colors">Projects</Link>
             <Link href="/about" className="hover:text-[#ffe066] transition-colors">About</Link>
