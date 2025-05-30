@@ -24,7 +24,7 @@ const Timeline: React.FC = () => {
             ))}
           </div>
           <div className="md:w-1/2 w-full px-4">
-            <p className="text-lg text-gray-800 dark:text-gray-200 text-center md:text-left whitespace-pre-line">
+            <p className="text-lg text-gray-200 dark:text-gray-200 text-center md:text-left whitespace-pre-line">
               {entry.caption}
             </p>
           </div>
@@ -39,7 +39,7 @@ const Timeline: React.FC = () => {
           height={400}
           unoptimized
         />
-        <p className="max-w-2xl text-xl text-gray-800 dark:text-gray-200 text-center font-medium whitespace-pre-line">
+        <p className="max-w-2xl text-xl text-gray-200 dark:text-gray-200 text-center font-medium whitespace-pre-line">
           {finalTimelineText}
         </p>
       </div>

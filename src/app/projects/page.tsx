@@ -124,7 +124,7 @@ export default function Projects() {
   return (
     <main className="flex flex-col items-center justify-center min-h-screen py-12 px-4 text-center gap-8">
       <h1 className="text-3xl font-bold mb-4">Projects & Apps</h1>
-      <p className="max-w-xl text-lg text-gray-700 dark:text-gray-300 mb-8">
+      <p className="max-w-xl text-lg text-gray-100 dark:text-gray-100 mb-8">
         Here you&apos;ll find a collection of my interactive apps and projects. Each one tells a part of my story and showcases my journey from TV to AI.
       </p>
       {loading && <p>Loading starred repositories...</p>}

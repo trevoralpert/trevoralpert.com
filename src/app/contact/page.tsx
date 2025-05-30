@@ -4,7 +4,7 @@ export default function Contact() {
   return (
     <main className="flex flex-col items-center justify-center min-h-screen py-12 px-4 text-center gap-8">
       <h1 className="text-3xl font-bold mb-4">Contact</h1>
-      <p className="max-w-xl text-lg text-gray-700 dark:text-gray-300 mb-8">
+      <p className="max-w-xl text-lg text-gray-100 dark:text-gray-100 mb-8">
         Interested in collaborating, have questions, or just want to connect? Reach out to me!
       </p>
       <a href="mailto:trevoralpert1@gmail.com" className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold shadow hover:bg-blue-700 transition-colors">

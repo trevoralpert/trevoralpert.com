@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
+import Image from "next/image";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,13 +29,17 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <header className="w-full py-6 flex justify-center border-b border-gray-200 dark:border-gray-700 mb-8">
-          <nav className="flex gap-8 text-lg font-semibold">
-            <Link href="/" className="hover:text-blue-600 transition-colors">Home</Link>
-            <Link href="/projects" className="hover:text-blue-600 transition-colors">Projects</Link>
-            <Link href="/about" className="hover:text-blue-600 transition-colors">About</Link>
-            <Link href="/contact" className="hover:text-blue-600 transition-colors">Contact</Link>
+        <header className="w-full py-6 flex items-center border-b border-gray-700 bg-[#0a2233] mb-8 px-8">
+          <Link href="/" className="flex-shrink-0">
+            <Image src="/logo.png" alt="Trevor Alpert Logo" width={100} height={100} className="w-full h-full" />
+          </Link>
+          <nav className="flex-1 flex justify-center gap-20 text-3xl font-semibold text-white">
+            <Link href="/" className="hover:text-[#ffe066] transition-colors">Home</Link>
+            <Link href="/projects" className="hover:text-[#ffe066] transition-colors">Projects</Link>
+            <Link href="/about" className="hover:text-[#ffe066] transition-colors">About</Link>
+            <Link href="/contact" className="hover:text-[#ffe066] transition-colors">Contact</Link>
           </nav>
+          <div style={{ width: 80 }} aria-hidden="true"></div>
         </header>
         {children}
       </body>
