@@ -125,7 +125,7 @@ export default function Projects() {
       <div className="w-full max-w-2xl grid grid-cols-1 md:grid-cols-2 gap-6">
         {repos.map((repo) => (
           <div key={repo.id} className="rounded-lg border p-6 bg-white dark:bg-gray-900 shadow text-left">
-            <h2 className="text-xl font-semibold mb-2">{formatTitle(repo.name)}</h2>
+            <h2 className="text-xl font-semibold mb-2 text-black">{formatTitle(repo.name)}</h2>
             <p className="text-gray-600 dark:text-gray-400 mb-2">
               {repo.readmeSummary || repo.description || "No description provided."}
             </p>
@@ -140,6 +140,28 @@ export default function Projects() {
                   className="inline-block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-sm font-medium"
                 >
                   Open Tik-Tok/Reels Script Generator App
+                </a>
+              </div>
+            )}
+            {/* Add link to embedded app if this is the Resume-Screening-Assistant */}
+            {repo.name === "Resume-Screening-Assistant" && (
+              <div className="mt-2">
+                <a
+                  href="/resume-score-app"
+                  className="inline-block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-sm font-medium"
+                >
+                  Open Resume Score Generator App
+                </a>
+              </div>
+            )}
+            {/* Add link to embedded app if this is the Face Timeline app */}
+            {repo.name === "Face_Timeline" && (
+              <div className="mt-2">
+                <a
+                  href="/face-timeline-app"
+                  className="inline-block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-sm font-medium"
+                >
+                  Open Face Timeline App
                 </a>
               </div>
             )}
