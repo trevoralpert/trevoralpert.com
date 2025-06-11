@@ -95,13 +95,6 @@ export default function Projects() {
         let data: Repo[] = await res.json();
         // Remove the personal README repo if present
         data = data.filter((repo) => !isPersonalReadmeRepo(repo));
-        // Always add the CSV Data Analysis Tool repo
-        const csvRepoRes = await fetch("https://api.github.com/repos/trevoralpert/CSV-Data-Analysis-Tool");
-        const csvRepo: Repo = await csvRepoRes.json();
-        // Avoid duplicates
-        if (!data.some((repo) => repo.owner.login === "trevoralpert" && repo.name === "CSV-Data-Analysis-Tool")) {
-          data.unshift(csvRepo);
-        }
         // Limit to 6
         data = data.slice(0, 6);
         // Fetch README summaries in parallel
