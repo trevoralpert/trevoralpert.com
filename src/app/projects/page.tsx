@@ -143,14 +143,25 @@ export default function Projects() {
                 </a>
               </div>
             )}
-            {/* Add link to embedded app if this is the Resume-Screening-Assistant */}
-            {repo.name === "Resume-Screening-Assistant" && (
+            {/* Add link to embedded app if this is the Resume Score Generator app */}
+            {repo.name === "Resume-Cover-Letter-Job-Placement-Score-Generator" && (
               <div className="mt-2">
                 <a
                   href="/resume-score-app"
                   className="inline-block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-sm font-medium"
                 >
                   Open Resume Score Generator App
+                </a>
+              </div>
+            )}
+            {/* Add link to embedded app if this is the Resume Screening Assistant app */}
+            {repo.name === "Resume-Screening-Assistant" && (
+              <div className="mt-2">
+                <a
+                  href="/resume-screening-app"
+                  className="inline-block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-sm font-medium"
+                >
+                  Open Resume Screening Assistant App
                 </a>
               </div>
             )}
