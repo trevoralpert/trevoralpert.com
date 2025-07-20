@@ -123,21 +123,6 @@ export default function Projects() {
       {loading && <p>Loading starred repositories...</p>}
       {error && <p className="text-red-500">{error}</p>}
       <div className="w-full max-w-2xl grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* EvoChess - Manual entry */}
-        <div className="rounded-lg border p-6 bg-white dark:bg-gray-900 shadow text-left">
-          <h2 className="text-xl font-semibold mb-2 text-black">EvoChess</h2>
-          <p className="text-gray-600 dark:text-gray-400 mb-2">
-            An evolutionary chess AI game where you can play against adaptive AI opponents.
-          </p>
-          <div className="mt-2">
-            <a
-              href="/evochess"
-              className="inline-block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-sm font-medium"
-            >
-              Play EvoChess
-            </a>
-          </div>
-        </div>
         {repos.map((repo) => (
           <div key={repo.id} className="rounded-lg border p-6 bg-white dark:bg-gray-900 shadow text-left">
             <h2 className="text-xl font-semibold mb-2 text-black">{formatTitle(repo.name)}</h2>
