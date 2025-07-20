@@ -9,7 +9,7 @@ export default function EvoChess() {
         style={{ height: "calc(100vh - 80px)", maxHeight: "calc(100vh - 80px)" }}
       >
         <iframe
-          src="https://project-5.fly.dev"
+          src="https://chess-evolution.onrender.com"
           style={{ width: "100%", height: "100%", border: "none", display: "block" }}
           title="EvoChess Game"
           allowFullScreen
