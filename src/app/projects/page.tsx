@@ -237,6 +237,7 @@ export default function Projects() {
   };
 
   const ProjectCard = ({ repo, isComingSoon }: { repo: Repo; isComingSoon: boolean }) => {
+    const [isHovered, setIsHovered] = useState(false);
     const hasBackgroundImage = !isComingSoon && projectBackgrounds[repo.name];
 
     // Coming Soon projects keep the original card style
@@ -309,7 +310,17 @@ export default function Projects() {
 
     // Active projects with background images
     return (
-      <div className="relative rounded-lg overflow-hidden shadow-lg h-64">
+      <div 
+        className="relative rounded-lg overflow-hidden shadow-lg h-64 cursor-pointer"
+        onMouseEnter={() => {
+          setIsHovered(true);
+          console.log(`Hovering over ${formatTitle(repo.name)}`);
+        }}
+        onMouseLeave={() => {
+          setIsHovered(false);
+          console.log(`Left ${formatTitle(repo.name)}`);
+        }}
+      >
         {/* Background Image */}
         {hasBackgroundImage && (
           <div className="absolute inset-0">
@@ -323,11 +334,71 @@ export default function Projects() {
           </div>
         )}
         
+        {/* Grey Overlay on Hover */}
+        <div className={`absolute inset-0 bg-black transition-opacity duration-300 ${
+          isHovered ? 'opacity-60' : 'opacity-0'
+        }`} />
+        
         {/* Title Overlay (Always Visible) */}
         <div className="absolute top-4 left-4 right-4 z-10">
           <h2 className="text-2xl font-bold text-white drop-shadow-lg">
             {formatTitle(repo.name)}
           </h2>
+        </div>
+        
+        {/* Content that appears on hover */}
+        <div className={`absolute inset-0 p-6 flex flex-col justify-center z-20 transition-opacity duration-300 ${
+          isHovered ? 'opacity-100' : 'opacity-0 pointer-events-none'
+        }`}>
+          <div className="bg-black bg-opacity-75 rounded-lg p-4 space-y-3 drop-shadow-lg">
+            <p className="text-white font-medium leading-relaxed">
+              {repo.readmeSummary || repo.description || "No description provided."}
+            </p>
+            
+            <div className="flex flex-col gap-2">
+              <a 
+                href={repo.html_url} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="text-blue-300 hover:text-blue-100 underline font-semibold"
+              >
+                View on GitHub
+              </a>
+              
+              {/* Demo video link */}
+              {demoLinks[repo.name]?.video && (
+                <a
+                  href={demoLinks[repo.name].video}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors text-sm font-bold drop-shadow-md"
+                >
+                  🎥 Watch Demo
+                </a>
+              )}
+              
+              {/* Pitch deck link for TradeFlow */}
+              {demoLinks[repo.name]?.pitchDeck && (
+                <a
+                  href={demoLinks[repo.name].pitchDeck}
+                  className="inline-block px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors text-sm font-bold drop-shadow-md"
+                >
+                  📊 Pitch Deck
+                </a>
+              )}
+              
+              {/* App deployment links */}
+              {getAppLink(repo.name) && (
+                <a
+                  href={getAppLink(repo.name)!}
+                  {...(isExternalLink(repo.name) ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                  className="inline-block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-sm font-bold drop-shadow-md"
+                >
+                  {isExternalLink(repo.name) ? 'Play EvoChess' : `Open ${formatTitle(repo.name)} App`}
+                </a>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     );
