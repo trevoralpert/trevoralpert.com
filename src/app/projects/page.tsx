@@ -238,7 +238,10 @@ export default function Projects() {
 
   const ProjectCard = ({ repo, isComingSoon }: { repo: Repo; isComingSoon: boolean }) => {
     const [isHovered, setIsHovered] = useState(false);
+    const [imageLoaded, setImageLoaded] = useState(false);
     const hasBackgroundImage = !isComingSoon && projectBackgrounds[repo.name];
+
+
 
     // Coming Soon projects keep the original card style
     if (isComingSoon) {
@@ -312,14 +315,8 @@ export default function Projects() {
     return (
       <div 
         className="relative rounded-lg overflow-hidden shadow-lg h-64 cursor-pointer"
-        onMouseEnter={() => {
-          setIsHovered(true);
-          console.log(`Hovering over ${formatTitle(repo.name)}`);
-        }}
-        onMouseLeave={() => {
-          setIsHovered(false);
-          console.log(`Left ${formatTitle(repo.name)}`);
-        }}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
       >
         {/* Background Image */}
         {hasBackgroundImage && (
@@ -330,27 +327,33 @@ export default function Projects() {
               fill
               className="object-cover"
               sizes="(max-width: 768px) 100vw, 50vw"
+              onError={() => setImageLoaded(false)}
+              onLoad={() => setImageLoaded(true)}
             />
           </div>
         )}
         
-        {/* Grey Overlay on Hover */}
-        <div className={`absolute inset-0 bg-black transition-opacity duration-300 ${
-          isHovered ? 'opacity-60' : 'opacity-0'
-        }`} />
+        {/* Fallback background for TradeFlow if image fails or hasn't loaded yet */}
+        {!isComingSoon && repo.name === "mobile" && (!hasBackgroundImage || !imageLoaded) && (
+          <div className="absolute inset-0 bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center">
+            <div className="text-8xl">📱</div>
+          </div>
+        )}
         
         {/* Title Overlay (Always Visible) */}
-        <div className="absolute top-4 left-4 right-4 z-10">
-          <h2 className="text-2xl font-bold text-white drop-shadow-lg">
+        <div className="absolute top-4 left-4 right-4 z-20">
+          <h2 className="text-2xl font-bold text-white" style={{
+            textShadow: '3px 3px 6px rgba(0,0,0,0.9), -1px -1px 3px rgba(0,0,0,0.9), 1px -1px 3px rgba(0,0,0,0.9), -1px 1px 3px rgba(0,0,0,0.9), 0px 0px 6px rgba(0,0,0,0.8)'
+          }}>
             {formatTitle(repo.name)}
           </h2>
         </div>
         
-        {/* Content that appears on hover */}
-        <div className={`absolute inset-0 p-6 flex flex-col justify-center z-20 transition-opacity duration-300 ${
+        {/* Content that appears on hover - positioned below title */}
+        <div className={`absolute left-4 right-4 z-10 transition-opacity duration-300 ${
           isHovered ? 'opacity-100' : 'opacity-0 pointer-events-none'
-        }`}>
-          <div className="bg-black bg-opacity-75 rounded-lg p-4 space-y-3 drop-shadow-lg">
+        }`} style={{ top: '80px', bottom: '16px' }}>
+          <div className="bg-black bg-opacity-20 rounded-lg p-4 space-y-2 drop-shadow-lg h-full flex flex-col justify-center">
             <p className="text-white font-medium leading-relaxed">
               {repo.readmeSummary || repo.description || "No description provided."}
             </p>
