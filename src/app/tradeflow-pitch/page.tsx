@@ -11,15 +11,7 @@ export default function TradeFlowPitch() {
           <p className="text-xl text-gray-600 dark:text-gray-300">
             Advanced Trading Platform - Pitch Deck
           </p>
-          <div className="mt-4 flex justify-center gap-4">
-            <a
-              href="https://docs.google.com/presentation/d/1NllK48niln0D-ASrWC82_SYy362wuMv0ZQD-wUkEK1M/edit?slide=id.g344ba1186e2_0_1#slide=id.g344ba1186e2_0_1"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block px-4 py-2 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 transition-colors"
-            >
-              📝 Edit in Google Slides
-            </a>
+          <div className="mt-4 flex justify-center">
             <a
               href="/projects"
               className="inline-block px-4 py-2 bg-gray-600 text-white rounded-lg font-bold hover:bg-gray-700 transition-colors"
