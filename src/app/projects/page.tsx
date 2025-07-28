@@ -30,7 +30,7 @@ const customSummaries: Record<string, string> = {
 // User-friendly project titles
 const customTitles: Record<string, string> = {
   "Chess-Evolution": "EvoChess",
-  "FutureFund": "FutureFund",
+  "FutureFund": "FutureFund (Desktop)",
   "mobile": "TradeFlow (Mobile)", 
   "Vertical-Video-Comedy-Sketch--.fdx-pdf_generator-": "TikTok/Reels Script Generator",
   "SnapCraft": "SnapCraft (Mobile)",
