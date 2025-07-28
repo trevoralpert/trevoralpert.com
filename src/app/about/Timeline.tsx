@@ -16,26 +16,11 @@ const Timeline: React.FC = () => {
   };
 
   return (
-    <>
-      <style jsx>{`
-        .flip-container {
-          perspective: 1000px;
-        }
-        .flip-card {
-          transform-style: preserve-3d;
-          transition: transform 0.7s ease;
-        }
-        .flip-card.flipped {
-          transform: rotateY(180deg);
-        }
-        .flip-face {
-          backface-visibility: hidden;
-        }
-        .flip-back {
-          transform: rotateY(180deg);
-        }
-      `}</style>
-      <section className="w-full max-w-4xl mx-auto py-12">
+    <section className="w-full max-w-4xl mx-auto py-12"
+      style={{
+        '--flip-perspective': '1000px'
+      } as React.CSSProperties}
+    >
       {timeline.map((entry: TimelineEntry, idx: number) => (
         <div
           key={idx}
@@ -64,13 +49,23 @@ const Timeline: React.FC = () => {
       <div className="w-full flex flex-col items-center mt-16 gap-6">
         {/* Flip Card Container */}
         <div 
-          className="flip-container relative w-full max-w-[600px] h-[300px] md:h-[400px]"
+          className="relative w-full max-w-[600px] h-[300px] md:h-[400px]"
+          style={{ perspective: '1000px' }}
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
         >
-          <div className={`flip-card relative w-full h-full ${isFlipped ? 'flipped' : ''}`}>
+          <div 
+            className="relative w-full h-full transition-transform duration-700"
+            style={{
+              transformStyle: 'preserve-3d',
+              transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)'
+            }}
+          >
             {/* Front Face - Image */}
-            <div className="flip-face absolute inset-0 w-full h-full">
+            <div 
+              className="absolute inset-0 w-full h-full"
+              style={{ backfaceVisibility: 'hidden' }}
+            >
               <div className="relative w-full h-full group">
                 <Image
                   src={finalTimelineImage}
@@ -104,7 +99,13 @@ const Timeline: React.FC = () => {
             </div>
 
             {/* Back Face - YouTube Embed */}
-            <div className="flip-face flip-back absolute inset-0 w-full h-full">
+            <div 
+              className="absolute inset-0 w-full h-full"
+              style={{ 
+                backfaceVisibility: 'hidden',
+                transform: 'rotateY(180deg)'
+              }}
+            >
               <div className="relative w-full h-full bg-black rounded-lg overflow-hidden">
                 <iframe
                   src="https://www.youtube.com/embed/XlJT2uZJzeM"
@@ -131,7 +132,6 @@ const Timeline: React.FC = () => {
         </p>
       </div>
     </section>
-    </>
   );
 };
 
