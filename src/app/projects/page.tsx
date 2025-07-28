@@ -47,7 +47,7 @@ const demoLinks: Record<string, { video?: string; pitchDeck?: string }> = {
   },
   "mobile": {
     video: "https://www.loom.com/share/9a288b7e04b044c7b10992222d273ffb",
-    pitchDeck: "https://docs.google.com/presentation/d/1NllK48niln0D-ASrWC82_SYy362wuMv0ZQD-wUkEK1M/edit?slide=id.g344ba1186e2_0_1#slide=id.g344ba1186e2_0_1"
+    pitchDeck: "/tradeflow-pitch"
   },
   "FutureFund": {
     video: "https://youtu.be/SPVMIpDJNLw"
@@ -267,8 +267,7 @@ export default function Projects() {
          {!isComingSoon && demoLinks[repo.name]?.pitchDeck && (
            <a
              href={demoLinks[repo.name].pitchDeck}
-             target="_blank"
-             rel="noopener noreferrer"
+             {...(demoLinks[repo.name].pitchDeck?.startsWith('/') ? {} : { target: "_blank", rel: "noopener noreferrer" })}
              className="inline-block px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors text-sm font-bold"
            >
              📊 Pitch Deck
