@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import Image from "next/image";
 
 interface Repo {
   id: number;
@@ -38,6 +39,14 @@ const customTitles: Record<string, string> = {
   "Resume-Cover-Letter-Job-Placement-Score-Generator": "Resume/Cover Letter/Job Placement Score Generator",
   "Resume-Screening-Assistant": "Resume Screening Assistant",
   "Youtube-Scipt-Writing-tool": "Youtube Script Writing Tool"
+};
+
+// Background images for active projects
+const projectBackgrounds: Record<string, string> = {
+  "Chess-Evolution": "/project-images/evochess.png",
+  "mobile": "/project-images/tradeflow.png",
+  "Vertical-Video-Comedy-Sketch--.fdx-pdf_generator-": "/project-images/tiktok-reels-generator.png",
+  "SnapCraft": "/project-images/snapcraft.png"
 };
 
 // Demo video links for projects
@@ -228,9 +237,12 @@ export default function Projects() {
   };
 
   const ProjectCard = ({ repo, isComingSoon }: { repo: Repo; isComingSoon: boolean }) => {
-    // Temporarily simplified version for testing
-    return (
-      <div className="rounded-lg border p-6 shadow text-left bg-white dark:bg-gray-900">
+    const hasBackgroundImage = !isComingSoon && projectBackgrounds[repo.name];
+
+    // Coming Soon projects keep the original card style
+    if (isComingSoon) {
+      return (
+        <div className="rounded-lg border p-6 shadow text-left bg-white dark:bg-gray-900">
         <div className="flex items-center gap-2 mb-2">
           <h2 className="text-xl font-bold text-black dark:text-white">
             {formatTitle(repo.name)}
@@ -290,6 +302,32 @@ export default function Projects() {
               }
             </a>
           )}
+        </div>
+      </div>
+      );
+    }
+
+    // Active projects with background images
+    return (
+      <div className="relative rounded-lg overflow-hidden shadow-lg h-64">
+        {/* Background Image */}
+        {hasBackgroundImage && (
+          <div className="absolute inset-0">
+            <Image
+              src={projectBackgrounds[repo.name]}
+              alt={formatTitle(repo.name)}
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, 50vw"
+            />
+          </div>
+        )}
+        
+        {/* Title Overlay (Always Visible) */}
+        <div className="absolute top-4 left-4 right-4 z-10">
+          <h2 className="text-2xl font-bold text-white drop-shadow-lg">
+            {formatTitle(repo.name)}
+          </h2>
         </div>
       </div>
     );
