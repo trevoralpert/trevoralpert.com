@@ -326,6 +326,9 @@ export default function Projects() {
               alt={formatTitle(repo.name)}
               fill
               className="object-cover"
+              style={{
+                objectPosition: repo.name === "Chess-Evolution" ? "center top" : "center center"
+              }}
               sizes="(max-width: 768px) 100vw, 50vw"
               onError={() => setImageLoaded(false)}
               onLoad={() => setImageLoaded(true)}
