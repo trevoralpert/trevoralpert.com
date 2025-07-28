@@ -39,7 +39,6 @@ export default function RootLayout({
           <nav className="flex-1 flex justify-center gap-16 text-3xl font-semibold text-white">
             <Link href="/" className="hover:text-[#ffe066] transition-colors">Home</Link>
             <Link href="/projects" className="hover:text-[#ffe066] transition-colors">Projects</Link>
-            <Link href="/evochess" className="hover:text-[#ffe066] transition-colors">EvoChess</Link>
             <Link href="/about" className="hover:text-[#ffe066] transition-colors">About</Link>
             <Link href="/contact" className="hover:text-[#ffe066] transition-colors">Contact</Link>
           </nav>

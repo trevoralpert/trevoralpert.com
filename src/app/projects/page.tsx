@@ -7,23 +7,70 @@ interface Repo {
   html_url: string;
   description: string;
   owner: { login: string };
+  topics?: string[];
   readmeSummary?: string;
 }
 
 // Hand-crafted summaries for each project (max 18 words)
 const customSummaries: Record<string, string> = {
+  "Chess-Evolution": "Real-time multiplayer chess on a 3D globe with evolutionary piece upgrades and strategic combat.",
+  "FutureFund": "AI-powered investment platform helping users make smarter financial decisions with personalized portfolio recommendations.",
+  "mobile": "Advanced trading platform with real-time market data, AI insights, and portfolio management tools.",
+  "Vertical-Video-Comedy-Sketch--.fdx-pdf_generator-": "Generate TikTok or Instagram comedy scripts from your sample and characters, then export as editable Final Draft or PDF.",
+  "SnapCraft": "AI-powered social media content creation tool for generating engaging posts, captions, and visual content.",
+  "Face_Timeline": "Interactive timeline showcasing personal growth through facial recognition and photo chronology visualization.",
+  "Resume-Cover-Letter-Job-Placement-Score-Generator": "AI-powered tool that analyzes and scores resumes, cover letters, and job placements for optimization.",
+  "Resume-Screening-Assistant": "Automated resume screening system that ranks candidates using AI to streamline hiring processes.",
   "CSV-Data-Analysis-Tool": "Upload a CSV, ask questions, and get instant AI-powered insights using GPT-4.",
   "Marketing-Tool": "Automate marketing tasks and campaigns with a simple, user-friendly tool for businesses.",
-  "Vertical-Video-Comedy-Sketch--.fdx-pdf_generator-": "Generate TikTok or Instagram comedy scripts from your sample and characters, then export as editable Final Draft or PDF.",
   "AI-Powered-HR-Assistant": "Chatbot that intakes your company's HR Policy Handbook and answers questions to automate HR support tasks.",
-  "Resume-Screening-Assistant": "Screen resumes and rank candidates using AI to streamline your hiring process.",
   "Youtube-Scipt-Writing-tool": "Generate YouTube video scripts with AI. Input your topic and get a ready-to-use script."
 };
 
 // User-friendly project titles
 const customTitles: Record<string, string> = {
-  "Vertical-Video-Comedy-Sketch--.fdx-pdf_generator-": "Tik-Tok/Reels Script Generator",
+  "Chess-Evolution": "EvoChess",
+  "FutureFund": "FutureFund",
+  "mobile": "TradeFlow (Mobile)", 
+  "Vertical-Video-Comedy-Sketch--.fdx-pdf_generator-": "TikTok/Reels Script Generator",
+  "SnapCraft": "SnapCraft (Mobile)",
+  "Face_Timeline": "Face Timeline",
+  "Resume-Cover-Letter-Job-Placement-Score-Generator": "Resume/Cover Letter/Job Placement Score Generator",
+  "Resume-Screening-Assistant": "Resume Screening Assistant",
   "Youtube-Scipt-Writing-tool": "Youtube Script Writing Tool"
+};
+
+// Demo video links for projects
+const demoLinks: Record<string, { video?: string; pitchDeck?: string }> = {
+  "Chess-Evolution": {
+    video: "https://www.loom.com/share/dc4e01dfa5c14d17935cf4bad60a47d5"
+  },
+  "mobile": {
+    video: "https://www.loom.com/share/9a288b7e04b044c7b10992222d273ffb",
+    pitchDeck: "https://docs.google.com/presentation/d/1NllK48niln0D-ASrWC82_SYy362wuMv0ZQD-wUkEK1M/edit?slide=id.g344ba1186e2_0_1#slide=id.g344ba1186e2_0_1"
+  },
+  "FutureFund": {
+    video: "https://youtu.be/SPVMIpDJNLw"
+  },
+  "SnapCraft": {
+    video: "https://youtu.be/w5h5hhxFNrA"
+  }
+};
+
+// Custom ordering for projects (by repo name)
+const projectOrder = {
+  active: [
+    "Chess-Evolution",
+    "mobile", // TradeFlow
+    "Vertical-Video-Comedy-Sketch--.fdx-pdf_generator-",
+    "SnapCraft"
+  ],
+  comingSoon: [
+    "FutureFund",
+    "Face_Timeline",
+    "Resume-Cover-Letter-Job-Placement-Score-Generator", 
+    "Resume-Screening-Assistant"
+  ]
 };
 
 function formatTitle(repoName: string): string {
@@ -81,30 +128,71 @@ function isPersonalReadmeRepo(repo: Repo) {
   return repo.name.toLowerCase().includes("readme") && repo.owner.login === "trevoralpert";
 }
 
+// Helper to sort repos by custom order
+function sortByCustomOrder(repos: Repo[], orderArray: string[]): Repo[] {
+  return repos.sort((a, b) => {
+    const aIndex = orderArray.indexOf(a.name);
+    const bIndex = orderArray.indexOf(b.name);
+    
+    // If both are in the order array, sort by their position
+    if (aIndex !== -1 && bIndex !== -1) {
+      return aIndex - bIndex;
+    }
+    // If only one is in the order array, prioritize it
+    if (aIndex !== -1) return -1;
+    if (bIndex !== -1) return 1;
+    // If neither is in the order array, maintain original order
+    return 0;
+  });
+}
+
 export default function Projects() {
-  const [repos, setRepos] = useState<Repo[]>([]);
+  const [activeRepos, setActiveRepos] = useState<Repo[]>([]);
+  const [comingSoonRepos, setComingSoonRepos] = useState<Repo[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
     async function fetchReposAndReadmes() {
       try {
-        // Fetch starred repos
-        const res = await fetch("https://api.github.com/users/trevoralpert/starred?per_page=10");
+        // Fetch starred repos with higher limit to ensure we get all tagged ones
+        const res = await fetch("https://api.github.com/users/trevoralpert/starred?per_page=50");
         if (!res.ok) throw new Error("Failed to fetch starred repos");
         let data: Repo[] = await res.json();
+        
         // Remove the personal README repo if present
         data = data.filter((repo) => !isPersonalReadmeRepo(repo));
-        // Limit to 6
-        data = data.slice(0, 6);
-        // Fetch README summaries in parallel
-        const withReadmes = await Promise.all(
-          data.map(async (repo) => ({
-            ...repo,
-            readmeSummary: await fetchReadmeSummary(repo.owner.login, repo.name),
-          }))
+        
+        // Filter by topics
+        const activeProjects = data.filter((repo) => 
+          repo.topics?.includes('portfolio-active')
         );
-        setRepos(withReadmes);
+        const comingSoonProjects = data.filter((repo) => 
+          repo.topics?.includes('portfolio-coming-soon')
+        );
+        
+        // Sort by custom order
+        const sortedActive = sortByCustomOrder(activeProjects, projectOrder.active);
+        const sortedComingSoon = sortByCustomOrder(comingSoonProjects, projectOrder.comingSoon);
+        
+        // Fetch README summaries in parallel for both groups
+        const [activeWithReadmes, comingSoonWithReadmes] = await Promise.all([
+          Promise.all(
+            sortedActive.map(async (repo) => ({
+              ...repo,
+              readmeSummary: await fetchReadmeSummary(repo.owner.login, repo.name),
+            }))
+          ),
+          Promise.all(
+            sortedComingSoon.map(async (repo) => ({
+              ...repo,
+              readmeSummary: await fetchReadmeSummary(repo.owner.login, repo.name),
+            }))
+          )
+        ]);
+        
+        setActiveRepos(activeWithReadmes);
+        setComingSoonRepos(comingSoonWithReadmes);
         setLoading(false);
       } catch (err: unknown) {
         setError(err instanceof Error ? err.message : "An unknown error occurred");
@@ -114,71 +202,125 @@ export default function Projects() {
     fetchReposAndReadmes();
   }, []);
 
+  // Helper function to get the app link for embedded projects
+  const getAppLink = (repoName: string) => {
+    switch (repoName) {
+      case "Vertical-Video-Comedy-Sketch--.fdx-pdf_generator-":
+        return "/flyio-app";
+      case "Resume-Cover-Letter-Job-Placement-Score-Generator":
+        return "/resume-score-app";
+      case "Resume-Screening-Assistant":
+        return "/resume-screening-app";
+      case "Face_Timeline":
+        return "/face-timeline-app";
+      case "Chess-Evolution":
+        return "https://chess-evolution.onrender.com"; // External link for EvoChess
+      default:
+        return null;
+    }
+  };
+
+  // Helper function to determine if link should be external
+  const isExternalLink = (repoName: string) => {
+    return repoName === "Chess-Evolution";
+  };
+
+     const renderProjectCard = (repo: Repo, isComingSoon: boolean = false) => (
+     <div key={repo.id} className="rounded-lg border p-6 shadow text-left bg-white dark:bg-gray-900">
+      <div className="flex items-center gap-2 mb-2">
+                 <h2 className="text-xl font-bold text-black dark:text-white">
+           {formatTitle(repo.name)}
+         </h2>
+                 {isComingSoon && (
+           <span className="px-2 py-1 text-xs font-bold bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200 rounded-full">
+             Coming Soon
+           </span>
+         )}
+      </div>
+                    <p className="mb-2 font-medium text-gray-800 dark:text-gray-200">
+         {repo.readmeSummary || repo.description || "No description provided."}
+       </p>
+      
+             <div className="flex flex-col gap-2">
+         <a 
+           href={repo.html_url} 
+           target="_blank" 
+           rel="noopener noreferrer" 
+           className="text-blue-600 hover:underline font-semibold"
+         >
+           View on GitHub
+         </a>
+         
+         {/* Demo video link for all projects */}
+         {demoLinks[repo.name]?.video && (
+           <a
+             href={demoLinks[repo.name].video}
+             target="_blank"
+             rel="noopener noreferrer"
+             className="inline-block px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors text-sm font-bold"
+           >
+             🎥 Watch Demo
+           </a>
+         )}
+         
+         {/* Pitch deck link for TradeFlow */}
+         {!isComingSoon && demoLinks[repo.name]?.pitchDeck && (
+           <a
+             href={demoLinks[repo.name].pitchDeck}
+             target="_blank"
+             rel="noopener noreferrer"
+             className="inline-block px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors text-sm font-bold"
+           >
+             📊 Pitch Deck
+           </a>
+         )}
+         
+         {/* App link for all projects with deployments */}
+         {getAppLink(repo.name) && (
+           <a
+             href={getAppLink(repo.name)!}
+             {...(isExternalLink(repo.name) ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+             className="inline-block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-sm font-bold"
+           >
+             {isComingSoon 
+               ? '🚀 Demo Deployment'
+               : (isExternalLink(repo.name) ? 'Play EvoChess' : `Open ${formatTitle(repo.name)} App`)
+             }
+           </a>
+         )}
+       </div>
+    </div>
+  );
+
   return (
     <main className="flex flex-col items-center justify-center min-h-screen py-12 px-4 text-center gap-8">
       <h1 className="text-3xl font-bold mb-4">Projects & Apps</h1>
       <p className="max-w-xl text-lg text-gray-100 dark:text-gray-100 mb-8">
         Here you&apos;ll find a collection of my interactive apps and projects. Each one tells a part of my story and showcases my journey from TV to AI.
       </p>
-      {loading && <p>Loading starred repositories...</p>}
+      
+      {loading && <p>Loading projects...</p>}
       {error && <p className="text-red-500">{error}</p>}
-      <div className="w-full max-w-2xl grid grid-cols-1 md:grid-cols-2 gap-6">
-        {repos.map((repo) => (
-          <div key={repo.id} className="rounded-lg border p-6 bg-white dark:bg-gray-900 shadow text-left">
-            <h2 className="text-xl font-semibold mb-2 text-black">{formatTitle(repo.name)}</h2>
-            <p className="text-gray-600 dark:text-gray-400 mb-2">
-              {repo.readmeSummary || repo.description || "No description provided."}
-            </p>
-            <a href={repo.html_url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
-              View on GitHub
-            </a>
-            {/* Add link to embedded app if this is the Tik-Tok/Reels Script Generator */}
-            {repo.name === "Vertical-Video-Comedy-Sketch--.fdx-pdf_generator-" && (
-              <div className="mt-2">
-                <a
-                  href="/flyio-app"
-                  className="inline-block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-sm font-medium"
-                >
-                  Open Tik-Tok/Reels Script Generator App
-                </a>
-              </div>
-            )}
-            {/* Add link to embedded app if this is the Resume Score Generator app */}
-            {repo.name === "Resume-Cover-Letter-Job-Placement-Score-Generator" && (
-              <div className="mt-2">
-                <a
-                  href="/resume-score-app"
-                  className="inline-block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-sm font-medium"
-                >
-                  Open Resume Score Generator App
-                </a>
-              </div>
-            )}
-            {/* Add link to embedded app if this is the Resume Screening Assistant app */}
-            {repo.name === "Resume-Screening-Assistant" && (
-              <div className="mt-2">
-                <a
-                  href="/resume-screening-app"
-                  className="inline-block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-sm font-medium"
-                >
-                  Open Resume Screening Assistant App
-                </a>
-              </div>
-            )}
-            {/* Add link to embedded app if this is the Face Timeline app */}
-            {repo.name === "Face_Timeline" && (
-              <div className="mt-2">
-                <a
-                  href="/face-timeline-app"
-                  className="inline-block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-sm font-medium"
-                >
-                  Open Face Timeline App
-                </a>
-              </div>
-            )}
+      
+      {/* Active Projects Section */}
+      {!loading && activeRepos.length > 0 && (
+        <div className="w-full max-w-4xl">
+          <h2 className="text-2xl font-bold mb-6 text-left">Active Projects</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+            {activeRepos.map((repo) => renderProjectCard(repo, false))}
           </div>
-        ))}
-      </div>
+        </div>
+      )}
+      
+      {/* Coming Soon Section */}
+      {!loading && comingSoonRepos.length > 0 && (
+        <div className="w-full max-w-4xl">
+          <h2 className="text-2xl font-bold mb-6 text-left">Coming Soon</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {comingSoonRepos.map((repo) => renderProjectCard(repo, true))}
+          </div>
+        </div>
+      )}
     </main>
   );
 } 
