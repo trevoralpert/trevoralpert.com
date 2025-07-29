@@ -122,8 +122,13 @@ function summarizeReadme(text: string, repoName?: string): string {
 
 async function fetchReadmeSummary(owner: string, repo: string): Promise<string> {
   try {
+    const headers: HeadersInit = { Accept: "application/vnd.github.v3.raw" };
+    if (process.env.NEXT_PUBLIC_GITHUB_TOKEN) {
+      headers.Authorization = `token ${process.env.NEXT_PUBLIC_GITHUB_TOKEN}`;
+    }
+    
     const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/readme`, {
-      headers: { Accept: "application/vnd.github.v3.raw" },
+      headers,
     });
     if (!res.ok) return "";
     const text = await res.text();
@@ -167,8 +172,21 @@ export default function Projects() {
     async function fetchReposAndReadmes() {
       try {
         // Fetch starred repos with higher limit to ensure we get all tagged ones
-        const res = await fetch("https://api.github.com/users/trevoralpert/starred?per_page=50");
-        if (!res.ok) throw new Error("Failed to fetch starred repos");
+        const headers: HeadersInit = {};
+        // Add GitHub token if available to increase rate limits
+        if (process.env.NEXT_PUBLIC_GITHUB_TOKEN) {
+          headers.Authorization = `token ${process.env.NEXT_PUBLIC_GITHUB_TOKEN}`;
+        }
+        
+        const res = await fetch("https://api.github.com/users/trevoralpert/starred?per_page=50", {
+          headers
+        });
+        if (!res.ok) {
+          console.error("GitHub API Error:", res.status, res.statusText);
+          const errorText = await res.text();
+          console.error("Error details:", errorText);
+          throw new Error(`Failed to fetch starred repos: ${res.status} ${res.statusText}`);
+        }
         let data: Repo[] = await res.json();
         
         // Remove the personal README repo if present
