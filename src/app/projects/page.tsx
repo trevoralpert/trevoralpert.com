@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import Image from 'next/image';
 
 interface Repo {
   id: number;
@@ -14,6 +15,7 @@ interface Repo {
 // Hand-crafted summaries for each project (max 18 words)
 const customSummaries: Record<string, string> = {
   "Chess-Evolution": "Real-time multiplayer chess on a 3D globe with evolutionary piece upgrades and strategic combat.",
+  "draft-assistant": "Comprehensive fantasy football draft assistant optimized for strategic draft management and player recommendations.",
   "FutureFund": "AI-powered investment platform helping users make smarter financial decisions with personalized portfolio recommendations.",
   "mobile": "Advanced trading platform with real-time market data, AI insights, and portfolio management tools.",
   "Vertical-Video-Comedy-Sketch--.fdx-pdf_generator-": "Generate TikTok or Instagram comedy scripts from your sample and characters, then export as editable Final Draft or PDF.",
@@ -30,7 +32,8 @@ const customSummaries: Record<string, string> = {
 // User-friendly project titles
 const customTitles: Record<string, string> = {
   "Chess-Evolution": "EvoChess",
-  "FutureFund": "FutureFund",
+  "draft-assistant": "DraftGenie",
+  "FutureFund": "FutureFund (Desktop)",
   "mobile": "TradeFlow (Mobile)", 
   "Vertical-Video-Comedy-Sketch--.fdx-pdf_generator-": "TikTok/Reels Script Generator",
   "SnapCraft": "SnapCraft (Mobile)",
@@ -44,6 +47,9 @@ const customTitles: Record<string, string> = {
 const demoLinks: Record<string, { video?: string; pitchDeck?: string }> = {
   "Chess-Evolution": {
     video: "https://www.loom.com/share/dc4e01dfa5c14d17935cf4bad60a47d5"
+  },
+  "draft-assistant": {
+    video: "https://youtu.be/iOqklkh1oJE"
   },
   "mobile": {
     video: "https://www.loom.com/share/9a288b7e04b044c7b10992222d273ffb",
@@ -61,6 +67,7 @@ const demoLinks: Record<string, { video?: string; pitchDeck?: string }> = {
 const projectOrder = {
   active: [
     "Chess-Evolution",
+    "draft-assistant", // DraftGenie
     "mobile", // TradeFlow
     "Vertical-Video-Comedy-Sketch--.fdx-pdf_generator-",
     "SnapCraft"
@@ -71,6 +78,15 @@ const projectOrder = {
     "Resume-Cover-Letter-Job-Placement-Score-Generator", 
     "Resume-Screening-Assistant"
   ]
+};
+
+// Background images for active projects
+const projectBackgrounds: Record<string, string> = {
+  "Chess-Evolution": "/project-images/evochess.png",
+  "draft-assistant": "/project-images/draftgenie.png", 
+  "mobile": "/project-images/tradeflow.png",
+  "Vertical-Video-Comedy-Sketch--.fdx-pdf_generator-": "/project-images/tiktok-reels-generator.png",
+  "SnapCraft": "/project-images/snapcraft.png"
 };
 
 function formatTitle(repoName: string): string {
@@ -248,72 +264,160 @@ export default function Projects() {
     return repoName === "Chess-Evolution";
   };
 
-     const renderProjectCard = (repo: Repo, isComingSoon: boolean = false) => (
-     <div key={repo.id} className="rounded-lg border p-6 shadow text-left bg-white dark:bg-gray-900">
-      <div className="flex items-center gap-2 mb-2">
-                 <h2 className="text-xl font-bold text-black dark:text-white">
-           {formatTitle(repo.name)}
-         </h2>
-                 {isComingSoon && (
-           <span className="px-2 py-1 text-xs font-bold bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200 rounded-full">
-             Coming Soon
-           </span>
-         )}
+  // Project card component with background images and hover effects
+  const ProjectCard: React.FC<{ repo: Repo; isComingSoon: boolean }> = ({ repo, isComingSoon }) => {
+    const [isHovered, setIsHovered] = useState(false);
+    const [imageLoaded, setImageLoaded] = useState(false);
+
+    // For active projects, use background image cards with hover effects
+    if (!isComingSoon && projectBackgrounds[repo.name]) {
+      return (
+        <div 
+          key={repo.id}
+          className="relative h-64 rounded-lg overflow-hidden shadow-lg cursor-pointer"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        >
+          {/* Background Image */}
+          <Image
+            src={projectBackgrounds[repo.name]}
+            alt={formatTitle(repo.name)}
+            fill
+            className="object-cover"
+            style={repo.name === "Chess-Evolution" ? { objectPosition: "center top" } : {}}
+            onLoad={() => setImageLoaded(true)}
+          />
+          
+          {/* Fallback gradient for TradeFlow */}
+          {repo.name === "mobile" && !imageLoaded && (
+            <div className="absolute inset-0 bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center">
+              <span className="text-6xl">📱</span>
+            </div>
+          )}
+          
+          {/* Title - Always Visible */}
+          <div className="absolute inset-0 flex items-start p-6">
+            <h2 
+              className="text-2xl font-bold text-white z-10"
+              style={{
+                textShadow: "3px 3px 6px rgba(0,0,0,0.8), -1px -1px 2px rgba(0,0,0,0.8), 1px -1px 2px rgba(0,0,0,0.8), -1px 1px 2px rgba(0,0,0,0.8)"
+              }}
+            >
+              {formatTitle(repo.name)}
+            </h2>
+          </div>
+          
+          {/* Hover Overlay */}
+          {isHovered && (
+            <div className="absolute inset-0 bg-black bg-opacity-20 flex items-end transition-all duration-300">
+              <div className="absolute top-20 bottom-4 left-4 right-4 bg-black bg-opacity-50 p-4 rounded-lg">
+                <p className="text-white mb-4 text-sm font-bold">
+                  {repo.readmeSummary || repo.description || "No description provided."}
+                </p>
+                
+                <div className="flex flex-col gap-2">
+                  <a 
+                    href={repo.html_url} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="inline-block px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-sm font-bold drop-shadow-md"
+                  >
+                    📱 View on GitHub
+                  </a>
+                  
+                  {demoLinks[repo.name]?.video && (
+                    <a
+                      href={demoLinks[repo.name].video}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-block px-3 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors text-sm font-bold drop-shadow-md"
+                    >
+                      🎥 Watch Demo
+                    </a>
+                  )}
+                  
+                  {demoLinks[repo.name]?.pitchDeck && (
+                    <a
+                      href={demoLinks[repo.name].pitchDeck}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-block px-3 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors text-sm font-bold drop-shadow-md"
+                    >
+                      📊 Pitch Deck
+                    </a>
+                  )}
+                  
+                  {getAppLink(repo.name) && (
+                    <a
+                      href={getAppLink(repo.name)!}
+                      target={isExternalLink(repo.name) ? "_blank" : "_self"}
+                      rel={isExternalLink(repo.name) ? "noopener noreferrer" : undefined}
+                      className="inline-block px-3 py-2 bg-orange-600 text-white rounded hover:bg-orange-700 transition-colors text-sm font-bold drop-shadow-md"
+                    >
+                      {isExternalLink(repo.name) ? 'Play EvoChess' : '🚀 Open App'}
+                    </a>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    // For coming soon projects, use standard cards
+    return (
+      <div key={repo.id} className="rounded-lg border p-6 shadow text-left bg-white dark:bg-gray-900">
+        <div className="flex items-center gap-2 mb-2">
+          <h2 className="text-xl font-bold text-black dark:text-white">
+            {formatTitle(repo.name)}
+          </h2>
+          {isComingSoon && (
+            <span className="px-2 py-1 text-xs font-bold bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200 rounded-full">
+              Coming Soon
+            </span>
+          )}
+        </div>
+        
+        <p className="mb-4 font-bold text-gray-800 dark:text-gray-200">
+          {repo.readmeSummary || repo.description || "No description provided."}
+        </p>
+        
+        <div className="flex flex-col gap-2">
+          <a 
+            href={repo.html_url} 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="text-blue-600 hover:underline font-bold"
+          >
+            📱 View on GitHub
+          </a>
+          
+          {demoLinks[repo.name]?.video && (
+            <a
+              href={demoLinks[repo.name].video}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors text-sm font-bold"
+            >
+              🎥 Watch Demo
+            </a>
+          )}
+          
+          {getAppLink(repo.name) && (
+            <a
+              href={getAppLink(repo.name)!}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block px-4 py-2 bg-orange-600 text-white rounded hover:bg-orange-700 transition-colors text-sm font-bold"
+            >
+              🚀 Demo Deployment
+            </a>
+          )}
+        </div>
       </div>
-                    <p className="mb-2 font-medium text-gray-800 dark:text-gray-200">
-         {repo.readmeSummary || repo.description || "No description provided."}
-       </p>
-      
-             <div className="flex flex-col gap-2">
-         <a 
-           href={repo.html_url} 
-           target="_blank" 
-           rel="noopener noreferrer" 
-           className="text-blue-600 hover:underline font-semibold"
-         >
-           View on GitHub
-         </a>
-         
-         {/* Demo video link for all projects */}
-         {demoLinks[repo.name]?.video && (
-           <a
-             href={demoLinks[repo.name].video}
-             target="_blank"
-             rel="noopener noreferrer"
-             className="inline-block px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors text-sm font-bold"
-           >
-             🎥 Watch Demo
-           </a>
-         )}
-         
-         {/* Pitch deck link for TradeFlow */}
-         {!isComingSoon && demoLinks[repo.name]?.pitchDeck && (
-           <a
-             href={demoLinks[repo.name].pitchDeck}
-             target="_blank"
-             rel="noopener noreferrer"
-             className="inline-block px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors text-sm font-bold"
-           >
-             📊 Pitch Deck
-           </a>
-         )}
-         
-         {/* App link for all projects with deployments */}
-         {getAppLink(repo.name) && (
-           <a
-             href={getAppLink(repo.name)!}
-             {...(isExternalLink(repo.name) ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-             className="inline-block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-sm font-bold"
-           >
-             {isComingSoon 
-               ? '🚀 Demo Deployment'
-               : (isExternalLink(repo.name) ? 'Play EvoChess' : `Open ${formatTitle(repo.name)} App`)
-             }
-           </a>
-         )}
-       </div>
-    </div>
-  );
+    );
+  };
 
   return (
     <main className="flex flex-col items-center justify-center min-h-screen py-12 px-4 text-center gap-8">
@@ -330,7 +434,7 @@ export default function Projects() {
         <div className="w-full max-w-4xl">
           <h2 className="text-2xl font-bold mb-6 text-left">Active Projects</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-            {activeRepos.map((repo) => renderProjectCard(repo, false))}
+            {activeRepos.map((repo) => <ProjectCard key={repo.id} repo={repo} isComingSoon={false} />)}
           </div>
         </div>
       )}
@@ -340,7 +444,7 @@ export default function Projects() {
         <div className="w-full max-w-4xl">
           <h2 className="text-2xl font-bold mb-6 text-left">Coming Soon</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {comingSoonRepos.map((repo) => renderProjectCard(repo, true))}
+            {comingSoonRepos.map((repo) => <ProjectCard key={repo.id} repo={repo} isComingSoon={true} />)}
           </div>
         </div>
       )}
