@@ -43,14 +43,6 @@ const customTitles: Record<string, string> = {
   "Youtube-Scipt-Writing-tool": "Youtube Script Writing Tool"
 };
 
-// Background images for active projects
-const projectBackgrounds: Record<string, string> = {
-  "Chess-Evolution": "/project-images/evochess.png",
-  "mobile": "/project-images/tradeflow.png",
-  "Vertical-Video-Comedy-Sketch--.fdx-pdf_generator-": "/project-images/tiktok-reels-generator.png",
-  "SnapCraft": "/project-images/snapcraft.png"
-};
-
 // Demo video links for projects
 const demoLinks: Record<string, { video?: string; pitchDeck?: string }> = {
   "Chess-Evolution": {
